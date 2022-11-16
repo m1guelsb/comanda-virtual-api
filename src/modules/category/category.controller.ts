@@ -15,21 +15,49 @@ export class CategoryController {
       ) => {
         const { name, icon } = req.body;
 
-        const newCategory = await this.categoryService.createCategory({
-          name,
-          icon,
-        });
+        if (!name)
+          return res.status(400).json({
+            status: 400,
+            message: 'category name is required',
+          });
 
-        res.json(newCategory);
+        try {
+          const newCategory = await this.categoryService.createCategory({
+            name,
+            icon,
+          });
+
+          res.status(201).json(newCategory);
+        } catch (error) {
+          res.status(500).json(error);
+        }
       }
     );
   }
 
   listCategories() {
     router.get('/categories', async (req, res) => {
-      const categoriesList = await this.categoryService.listCategories();
+      try {
+        const categoriesList = await this.categoryService.listCategories();
 
-      res.json(categoriesList);
+        res.json(categoriesList);
+      } catch (error) {
+        res.status(500).json(error);
+      }
+    });
+  }
+
+  deleteCategory() {
+    router.delete('/categories/:categoryId', async (req, res) => {
+      try {
+        const { categoryId } = req.params;
+
+        await this.categoryService.deleteCategory(categoryId);
+
+        res.status(204).send();
+      } catch (error) {
+        res.status(500).json(error);
+      }
     });
   }
 }
