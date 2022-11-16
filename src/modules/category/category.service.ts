@@ -16,4 +16,9 @@ export class CategoryService {
 
     return categoriesList;
   }
+
+  async deleteCategory(categoryId: string) {
+    const result = await Category.findByIdAndDelete(categoryId);
+    return result;
+  }
 }
