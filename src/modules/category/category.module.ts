@@ -7,5 +7,6 @@ export class CategoryModule {
 
     controller.createCategory();
     controller.listCategories();
+    controller.deleteCategory();
   }
 }
