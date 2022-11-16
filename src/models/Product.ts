@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 export const Product = model(
-  'Category',
+  'Product',
   new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
