@@ -35,6 +35,14 @@ export class ProductService {
     return editedOrder;
   }
 
+  async listProductsByCategory(categoryId: string) {
+    const categoriesList = await Product.find()
+      .where('category')
+      .equals(categoryId);
+
+    return categoriesList;
+  }
+
   async deleteProduct(productId: string) {
     const result = await Product.findByIdAndDelete(productId);
     return result;

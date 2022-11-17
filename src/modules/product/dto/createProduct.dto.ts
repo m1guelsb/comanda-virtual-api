@@ -4,5 +4,5 @@ export interface CreateProductDto {
   image: string;
   price: number;
   category: string;
-  ingredients: string;
+  ingredients?: string;
 }
