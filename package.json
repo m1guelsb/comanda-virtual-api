@@ -7,7 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon --exec npx ts-node -r tsconfig-paths/register src/index.ts"
+    "start": "ts-node -r tsconfig-paths/register src/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --ignore-watch node_modules --exit-child src/server.ts"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -21,8 +22,8 @@
     "@typescript-eslint/parser": "^5.43.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.27.0",
-    "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.1.0",
     "typescript": "^4.9.3"
   },
