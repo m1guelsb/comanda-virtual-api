@@ -2,6 +2,7 @@ import path from 'node:path';
 import { router } from '@/main';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
+import { ProductRepository } from './repositories/ProductRepository';
 
 import multer from 'multer';
 
@@ -18,7 +19,9 @@ const upload = multer({
 
 export class ProductModule {
   instantiate() {
-    const controller = new ProductController(new ProductService());
+    const repository = new ProductRepository();
+    const service = new ProductService(repository);
+    const controller = new ProductController(service);
 
     router.post('/products', upload.single('image'), (req, res) =>
       controller.createProduct(req, res)
