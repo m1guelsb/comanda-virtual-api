@@ -1,3 +1,4 @@
+import { HttpResponse } from '@/helpers/httpResponse';
 import { Request, Response } from 'express';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/createCategory.dto';
@@ -11,21 +12,17 @@ export class CategoryController {
   ) {
     const { name, icon } = req.body;
 
-    if (!name)
-      return res.status(400).json({
-        status: 400,
-        message: 'category name is required',
-      });
+    if (!name) new HttpResponse().badRequest(res, 'category name is required');
+    if (!icon) new HttpResponse().badRequest(res, 'category icon is required');
 
     try {
       const newCategory = await this.categoryService.createCategory({
         name,
         icon,
       });
-
-      res.status(201).json(newCategory);
+      new HttpResponse().ok(res, newCategory, 201);
     } catch (error) {
-      res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 
@@ -35,7 +32,7 @@ export class CategoryController {
 
       res.json(categoriesList);
     } catch (error) {
-      res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 
@@ -45,9 +42,9 @@ export class CategoryController {
 
       await this.categoryService.deleteCategory(categoryId);
 
-      res.status(204).send();
+      new HttpResponse().ok(res, {}, 204);
     } catch (error) {
-      res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 }
