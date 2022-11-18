@@ -1,8 +1,10 @@
-import { Product } from '@/models/Product';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { EditProductDto } from './dto/editProductDto';
+import { iProductRepository } from './repositories/iProductRepository';
 
 export class ProductService {
+  constructor(private iProductRepository: iProductRepository) {}
+
   async createProduct({
     name,
     category,
@@ -11,40 +13,29 @@ export class ProductService {
     price,
     ingredients,
   }: CreateProductDto) {
-    const newProduct = await Product.create({
-      name: name,
-      category: category,
-      description: description,
-      imagePath: image,
-      ingredients: ingredients,
-      price: price,
+    return this.iProductRepository.create({
+      name,
+      category,
+      description,
+      image,
+      price,
+      ingredients,
     });
-
-    return newProduct;
   }
 
   async listProducts() {
-    const categoriesList = await Product.find();
-
-    return categoriesList;
-  }
-
-  async editProduct(productId: string, { status }: EditProductDto) {
-    const editedOrder = await Product.findByIdAndUpdate(productId, { status });
-
-    return editedOrder;
+    return this.iProductRepository.findAll();
   }
 
   async listProductsByCategory(categoryId: string) {
-    const categoriesList = await Product.find()
-      .where('category')
-      .equals(categoryId);
+    return this.iProductRepository.findAllbyCategory(categoryId);
+  }
 
-    return categoriesList;
+  async editProduct(productId: string, dto: EditProductDto) {
+    return this.iProductRepository.edit(productId, dto);
   }
 
   async deleteProduct(productId: string) {
-    const result = await Product.findByIdAndDelete(productId);
-    return result;
+    return this.iProductRepository.delete(productId);
   }
 }
