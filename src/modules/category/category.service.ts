@@ -1,24 +1,18 @@
-import { Category } from '@/models/Category';
 import { CreateCategoryDto } from './dto/createCategory.dto';
+import { iCategoryRepository } from './repositories/iCategoryRepository';
 
 export class CategoryService {
-  async createCategory({ name, icon }: CreateCategoryDto) {
-    const newCategory = await Category.create({
-      name,
-      icon,
-    });
+  constructor(private iCategoryRepository: iCategoryRepository) {}
 
-    return newCategory;
+  async createCategory({ name, icon }: CreateCategoryDto) {
+    return this.iCategoryRepository.create({ name, icon });
   }
 
   async listCategories() {
-    const categoriesList = await Category.find();
-
-    return categoriesList;
+    return this.iCategoryRepository.findAll();
   }
 
   async deleteCategory(categoryId: string) {
-    const result = await Category.findByIdAndDelete(categoryId);
-    return result;
+    await this.iCategoryRepository.delete(categoryId);
   }
 }
