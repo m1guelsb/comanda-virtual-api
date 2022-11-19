@@ -1,3 +1,4 @@
+import { HttpResponse } from '@/helpers/httpResponse';
 import { Request, Response } from 'express';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { EditProductDto } from './dto/editProductDto';
@@ -13,11 +14,16 @@ export class ProductController {
     const imagePath = req.file?.filename;
     const { name, category, description, price, ingredients } = req.body;
 
-    if (!imagePath) {
-      return res.status(400).json({
-        message: 'category image is required',
-      });
-    }
+    if (!name) return new HttpResponse().badRequest(res, 'name is required');
+    if (!imagePath)
+      return new HttpResponse().badRequest(res, 'image is required');
+    if (!category)
+      return new HttpResponse().badRequest(res, 'category is required');
+    if (!description)
+      return new HttpResponse().badRequest(res, 'description is required');
+    if (!price) return new HttpResponse().badRequest(res, 'price is required');
+    if (typeof price === 'number')
+      return new HttpResponse().badRequest(res, 'price must be a integer type');
 
     try {
       const newProduct = await this.productService.createProduct({
@@ -29,9 +35,9 @@ export class ProductController {
         ingredients: ingredients ? JSON.parse(ingredients) : undefined,
       });
 
-      res.json(newProduct);
+      new HttpResponse().ok(res, newProduct, 201);
     } catch (error) {
-      return res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 
@@ -39,9 +45,9 @@ export class ProductController {
     try {
       const productsList = await this.productService.listProducts();
 
-      res.json(productsList);
+      new HttpResponse().ok(res, productsList);
     } catch (error) {
-      return res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 
@@ -54,9 +60,9 @@ export class ProductController {
       const productsListByCategory =
         await this.productService.listProductsByCategory(categoryId);
 
-      res.json(productsListByCategory);
+      new HttpResponse().ok(res, productsListByCategory);
     } catch (error) {
-      return res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 
@@ -65,16 +71,25 @@ export class ProductController {
     res: Response
   ) {
     const { productId } = req.params;
-    const { status } = req.body;
+
+    const imagePath = req.file?.filename;
+    const { name, category, description, price, ingredients } = req.body;
+
+    console.log('req.body', req.body);
 
     try {
       const editedProduct = await this.productService.editProduct(productId, {
-        status,
+        category,
+        description,
+        image: imagePath,
+        name,
+        price,
+        ingredients,
       });
 
-      res.json(editedProduct);
+      new HttpResponse().ok(res, editedProduct);
     } catch (error) {
-      return res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 
@@ -87,9 +102,9 @@ export class ProductController {
     try {
       await this.productService.deleteProduct(productId);
 
-      res.status(204).send();
+      new HttpResponse().ok(res, {}, 204);
     } catch (error) {
-      return res.status(500).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 }
