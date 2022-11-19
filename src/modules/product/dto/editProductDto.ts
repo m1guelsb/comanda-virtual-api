@@ -1,8 +1,8 @@
 export interface EditProductDto {
-  name: string;
-  description: string;
-  image: string;
-  price: number;
-  category: string;
-  ingredients?: string;
+  name?: string;
+  description?: string;
+  image?: string;
+  price?: number;
+  category?: string;
+  ingredients?: { name: string; icon: string }[];
 }
