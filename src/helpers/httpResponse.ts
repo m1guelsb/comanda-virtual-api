@@ -2,9 +2,7 @@ import { Response } from 'express';
 
 export class HttpResponse {
   ok(res: Response, data: unknown, status?: number): Response {
-    return res.status(status ? status : 200).json({
-      data,
-    });
+    return res.status(status ? status : 200).json(data);
   }
 
   badRequest(res: Response, message: string, status?: number): Response {
