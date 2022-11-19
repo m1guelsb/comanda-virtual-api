@@ -6,11 +6,14 @@ import { EditProductDto } from '../dto/editProductDto';
 
 export class ProductRepository implements iProductRepository {
   async create(dto: CreateProductDto) {
-    const newProduct = await MongoProduct.create(dto);
+    const newProduct = await MongoProduct.create({
+      ...dto,
+      imagePath: dto.image,
+    });
     return new Product({
       id: newProduct._id.toString(),
       name: newProduct.name,
-      image: newProduct.imagePath,
+      imagePath: newProduct.imagePath,
       category: newProduct.category?.toString(),
       price: newProduct.price,
       ingredients: newProduct.ingredients,
@@ -24,7 +27,7 @@ export class ProductRepository implements iProductRepository {
       return new Product({
         id: category._id.toString(),
         name: category.name,
-        image: category.imagePath,
+        imagePath: category.imagePath,
         category: category.category?.toString(),
         price: category.price,
         ingredients: category.ingredients,
@@ -35,18 +38,18 @@ export class ProductRepository implements iProductRepository {
   }
 
   async findAllbyCategory(categoryId: string) {
-    const categoryList = await MongoProduct.find()
+    const productList = await MongoProduct.find()
       .where('category')
       .equals(categoryId);
 
-    const cleanedProductList = categoryList.map((category) => {
+    const cleanedProductList = productList.map((product) => {
       return new Product({
-        id: category._id.toString(),
-        name: category.name,
-        image: category.imagePath,
-        category: category.category?.toString(),
-        price: category.price,
-        ingredients: category.ingredients,
+        id: product._id.toString(),
+        name: product.name,
+        imagePath: product.imagePath,
+        category: product.category?.toString(),
+        price: product.price,
+        ingredients: product.ingredients,
       });
     });
 
@@ -54,9 +57,17 @@ export class ProductRepository implements iProductRepository {
   }
 
   async edit(productId: string, dto: EditProductDto) {
-    await MongoProduct.findByIdAndUpdate(productId, {
-      dto,
-    });
+    await MongoProduct.findOneAndUpdate(
+      { _id: productId },
+      {
+        name: dto.name,
+        category: dto.category,
+        description: dto.description,
+        imagePath: dto.image,
+        ingredients: dto.ingredients,
+        price: dto.price,
+      }
+    );
   }
 
   async delete(categoryId: string) {
