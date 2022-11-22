@@ -54,14 +54,11 @@ export class OrderController {
     const { orderId } = req.params;
     const { status, products, table } = req.body;
 
-    const statusError = new HttpResponse().badRequest(
-      res,
-      'status should be "WAITING, IN_PRODUCTION or DONE"'
-    );
-
-    if (!status?.includes('WAITING')) return statusError;
-    if (!status?.includes('IN_PRODUCTION')) return statusError;
-    if (!status?.includes('DONE')) return statusError;
+    if (status && !['WAITING', 'IN_PRODUCTION', 'DONE'].includes(status))
+      return new HttpResponse().badRequest(
+        res,
+        'status should be one of: "WAITING" "IN_PRODUCTION" "DONE"'
+      );
 
     try {
       await this.orderService.editOrder(orderId, {
