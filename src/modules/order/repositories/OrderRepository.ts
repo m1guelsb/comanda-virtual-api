@@ -47,7 +47,9 @@ export class OrderRepository implements iOrderRepository {
 
   async edit(orderId: string, dto: EditOrderDto) {
     await MongoOrder.findByIdAndUpdate(orderId, {
-      dto,
+      status: dto.status,
+      table: dto.table,
+      products: dto.products,
     });
   }
 
