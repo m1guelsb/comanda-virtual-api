@@ -67,9 +67,9 @@ export class OrderController {
         table,
       });
 
-      new HttpResponse().ok(res, {});
+      new HttpResponse().ok(res, {}, 204);
     } catch (error) {
-      res.json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 
@@ -82,9 +82,9 @@ export class OrderController {
     try {
       await this.orderService.cancelOrder(orderId);
 
-      res.status(204).send();
+      new HttpResponse().ok(res, {}, 204);
     } catch (error) {
-      return res.status(404).json(error);
+      new HttpResponse().serverError(res, error);
     }
   }
 }
