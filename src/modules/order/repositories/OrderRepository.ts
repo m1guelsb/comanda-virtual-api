@@ -29,6 +29,7 @@ export class OrderRepository implements iOrderRepository {
 
   async findAll() {
     const orderList: OrderListWithProducts[] = await MongoOrder.find()
+      .sort({ createdAt: 1 })
       .populate('products.product')
       .lean();
 
