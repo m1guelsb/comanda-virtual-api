@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { app } from './main';
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 const DATABASE_URL = process.env.DATABASE_URL;
 
 if (!DATABASE_URL) throw Error('no database url');
