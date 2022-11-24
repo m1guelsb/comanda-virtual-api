@@ -13,6 +13,7 @@ export class ProductRepository implements iProductRepository {
     return new Product({
       id: newProduct._id.toString(),
       name: newProduct.name,
+      description: newProduct.description,
       imagePath: newProduct.imagePath,
       category: newProduct.category?.toString(),
       price: newProduct.price,
@@ -21,20 +22,21 @@ export class ProductRepository implements iProductRepository {
   }
 
   async findAll() {
-    const categoryList = await MongoProduct.find().lean();
+    const productList = await MongoProduct.find().lean();
 
-    const cleanedCategoryList = categoryList.map((category) => {
+    const cleanedProductList = productList.map((product) => {
       return new Product({
-        id: category._id.toString(),
-        name: category.name,
-        imagePath: category.imagePath,
-        category: category.category?.toString(),
-        price: category.price,
-        ingredients: category.ingredients,
+        id: product._id.toString(),
+        name: product.name,
+        description: product.description,
+        imagePath: product.imagePath,
+        category: product.category?.toString(),
+        price: product.price,
+        ingredients: product.ingredients,
       });
     });
 
-    return cleanedCategoryList;
+    return cleanedProductList;
   }
 
   async findAllbyCategory(categoryId: string) {
@@ -46,6 +48,7 @@ export class ProductRepository implements iProductRepository {
       return new Product({
         id: product._id.toString(),
         name: product.name,
+        description: product.description,
         imagePath: product.imagePath,
         category: product.category?.toString(),
         price: product.price,
