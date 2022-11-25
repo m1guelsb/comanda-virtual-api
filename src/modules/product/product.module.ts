@@ -1,15 +1,14 @@
-import path from 'node:path';
 import { router } from '@/main';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { ProductRepository } from './repositories/ProductRepository';
-
 import multer from 'multer';
+import path = require('path');
 
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, callback) {
-      callback(null, path.resolve(__dirname, '../../../', 'uploads'));
+      callback(null, path.resolve(__dirname, '../../../uploads'));
     },
     filename(req, file, callback) {
       callback(null, `${Date.now()}-${file.originalname}`);

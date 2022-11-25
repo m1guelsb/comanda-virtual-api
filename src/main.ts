@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import path from 'node:path';
+import path = require('path');
 import cors from 'cors';
 import express, { Request, Response, Router } from 'express';
 import { AppModule } from './app.module';
@@ -7,7 +7,7 @@ import { AppModule } from './app.module';
 export const router = Router();
 const app = express();
 
-app.use('/uploads', express.static(path.resolve(__dirname, '../', 'uploads')));
+app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
