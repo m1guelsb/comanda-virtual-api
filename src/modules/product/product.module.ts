@@ -1,9 +1,13 @@
 import { router } from '@/main';
-import { ProductController } from './product.controller';
+import {
+  ListProductsFilterQueries,
+  ProductController,
+} from './product.controller';
 import { ProductService } from './product.service';
 import { ProductRepository } from './repositories/ProductRepository';
 import multer from 'multer';
 import path = require('path');
+import { Request } from 'express';
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -26,10 +30,12 @@ export class ProductModule {
       controller.createProduct(req, res)
     );
 
-    router.get('/products', (req, res) => controller.listProducts(req, res));
-
-    router.get('/categories/:categoryId/products', (req, res) =>
-      controller.listProductsByCategory(req, res)
+    router.get(
+      '/products',
+      (
+        req: Request<undefined, unknown, unknown, ListProductsFilterQueries>,
+        res
+      ) => controller.listProducts(req, res)
     );
 
     router.patch('/products/:productId', (req, res) =>

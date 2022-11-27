@@ -4,6 +4,9 @@ import { CreateProductDto } from './dto/createProduct.dto';
 import { EditProductDto } from './dto/editProductDto';
 import { ProductService } from './product.service';
 
+export interface ListProductsFilterQueries {
+  categoryId: string;
+}
 export class ProductController {
   constructor(private productService: ProductService) {}
 
@@ -41,26 +44,18 @@ export class ProductController {
     }
   }
 
-  async listProducts(req: Request, res: Response) {
-    try {
-      const productsList = await this.productService.listProducts();
-
-      new HttpResponse().ok(res, productsList);
-    } catch (error) {
-      new HttpResponse().serverError(res, error);
-    }
-  }
-
-  async listProductsByCategory(
-    req: Request<{ categoryId: string }>,
+  async listProducts(
+    req: Request<undefined, unknown, unknown, ListProductsFilterQueries>,
     res: Response
   ) {
-    const { categoryId } = req.params;
-    try {
-      const productsListByCategory =
-        await this.productService.listProductsByCategory(categoryId);
+    const { categoryId } = req.query;
 
-      new HttpResponse().ok(res, productsListByCategory);
+    try {
+      const productsList = await this.productService.listProducts({
+        categoryId,
+      });
+
+      new HttpResponse().ok(res, productsList);
     } catch (error) {
       new HttpResponse().serverError(res, error);
     }

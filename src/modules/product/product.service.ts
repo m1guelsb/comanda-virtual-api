@@ -1,5 +1,6 @@
 import { CreateProductDto } from './dto/createProduct.dto';
 import { EditProductDto } from './dto/editProductDto';
+import { ListProductsFilterQueries } from './product.controller';
 import { iProductRepository } from './repositories/iProductRepository';
 
 export class ProductService {
@@ -23,12 +24,8 @@ export class ProductService {
     });
   }
 
-  async listProducts() {
-    return this.iProductRepository.findAll();
-  }
-
-  async listProductsByCategory(categoryId: string) {
-    return this.iProductRepository.findAllbyCategory(categoryId);
+  async listProducts(filterParams: ListProductsFilterQueries) {
+    return this.iProductRepository.findAll(filterParams);
   }
 
   async editProduct(productId: string, dto: EditProductDto) {

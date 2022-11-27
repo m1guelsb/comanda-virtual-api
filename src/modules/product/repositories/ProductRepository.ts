@@ -3,6 +3,7 @@ import { MongoProduct } from '@/database/mongodbModels';
 import { CreateProductDto } from '../dto/createProduct.dto';
 import { iProductRepository } from './iProductRepository';
 import { EditProductDto } from '../dto/editProductDto';
+import { ListProductsFilterQueries } from '../product.controller';
 
 export class ProductRepository implements iProductRepository {
   async create(dto: CreateProductDto) {
@@ -21,28 +22,31 @@ export class ProductRepository implements iProductRepository {
     });
   }
 
-  async findAll() {
+  async findAll(filterParams: ListProductsFilterQueries) {
+    if (filterParams.categoryId) {
+      const productListByCategory = await MongoProduct.find()
+        .where('category')
+        .equals(filterParams.categoryId)
+        .lean();
+
+      const cleanedProductListByCategory = productListByCategory.map(
+        (product) => {
+          return new Product({
+            id: product._id.toString(),
+            name: product.name,
+            description: product.description,
+            imagePath: product.imagePath,
+            category: product.category?.toString(),
+            price: product.price,
+            ingredients: product.ingredients,
+          });
+        }
+      );
+
+      return cleanedProductListByCategory;
+    }
+
     const productList = await MongoProduct.find().lean();
-
-    const cleanedProductList = productList.map((product) => {
-      return new Product({
-        id: product._id.toString(),
-        name: product.name,
-        description: product.description,
-        imagePath: product.imagePath,
-        category: product.category?.toString(),
-        price: product.price,
-        ingredients: product.ingredients,
-      });
-    });
-
-    return cleanedProductList;
-  }
-
-  async findAllbyCategory(categoryId: string) {
-    const productList = await MongoProduct.find()
-      .where('category')
-      .equals(categoryId);
 
     const cleanedProductList = productList.map((product) => {
       return new Product({
